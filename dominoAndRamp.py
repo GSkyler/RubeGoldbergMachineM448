@@ -38,7 +38,7 @@ class BouncyBalls(object):
 
         # pygame
         pygame.init()
-        self._screen = pygame.display.set_mode((900, 600))
+        self._screen = pygame.display.set_mode((1500, 900))
         self._clock = pygame.time.Clock()
 
         self._draw_options = pymunk.pygame_util.DrawOptions(self._screen)
@@ -87,9 +87,13 @@ class BouncyBalls(object):
         """
         static_body = self._space.static_body
         #static_lines = [pymunk.Segment(static_body, (111.0, 280.0), (407.0, 246.0), 0.0)]
-        static_lines = [pymunk.Segment(static_body, (0.0, 100.0), (1200.0, 100.0), 0.0),
-                        pymunk.Segment(static_body, (0.0, 100.0), (0.0, 250.0), 0.0),
-                        pymunk.Segment(static_body, (0.0, 250.0), (200.0, 100.0), 0.0)
+        static_lines = [pymunk.Segment(static_body, (0.0, 600.0), (1000.0, 600.0), 0.0),  # Dominoes
+                        pymunk.Segment(static_body, (0.0, 600.0), (0.0, 750.0), 0.0),     # Dominoes
+                        pymunk.Segment(static_body, (0.0, 750.0), (200.0, 600.0), 0.0),   # Dominoes
+                        pymunk.Segment(static_body, (1050.0, 500.0), (1250.0, 300.0), 0.0),  # Funnel Diag Left
+                        pymunk.Segment(static_body, (1550.0, 500.0), (1350.0, 300.0), 0.0),  # Funnel Diag Right
+                        pymunk.Segment(static_body, (1250.0, 100.0), (1250.0, 300.0), 0.0),  # Funnel Vert Left
+                        pymunk.Segment(static_body, (1350.0, 100.0), (1350.0, 300.0), 0.0),  # Funnel Vert Right
                         ]
         #static_lines = [pymunk.Segment(static_body, (50.0, 100.0), (500.0, 100.0), 0.0)] #these are like points to make a line (like a acoordinate grid where 0 is on the bottom)
         for line in static_lines:
@@ -103,7 +107,7 @@ class BouncyBalls(object):
             mass = 10
             inertia = pymunk.moment_for_box(3, (30, 60))
             body = pymunk.Body(mass, inertia)
-            body.position = (300+(i*50)), 150
+            body.position = (300+(i*50)), 650
             shape = pymunk.Poly(body, points, None, 0)
             #shape = pymunk.Circle(body, radius, (0, 0))
             shape.elasticity = 0
@@ -114,7 +118,7 @@ class BouncyBalls(object):
         radius = 25
         inertia = pymunk.moment_for_circle(mass, 0, radius, (0, 0))
         body = pymunk.Body(mass, inertia)
-        body.position = 625, 150
+        body.position = 625, 650
         shape = pymunk.Circle(body, radius, (0, 0))
         shape.elasticity = 0.2
         shape.friction = 0.1
@@ -163,7 +167,7 @@ class BouncyBalls(object):
         inertia = pymunk.moment_for_circle(mass, 0, radius, (0, 0))
         body = pymunk.Body(mass, inertia)
         x = random.randint(115, 350)
-        body.position = 10, 400
+        body.position = 10, 900
         shape = pymunk.Circle(body, radius, (0, 0))
         shape.elasticity = 0.95
         shape.friction = 0.9
