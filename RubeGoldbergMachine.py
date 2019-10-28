@@ -94,13 +94,16 @@ class BouncyBalls(object):
             if executed:
                 x = myBody.position.x
                 if x1 < x < x2:
+
+                    myBody.velocity = myBody.velocity.x, 10 * random.randint(30,50)
                     # myBody.gravity = (0.0, 900.0)
-                    self._space.gravity = (0, 600)
+                    ##self._space.gravity = (0, 600)
                     # print("yes")
 
                 else:
+                    myBody.velocity = myBody.velocity.x, myBody.velocity.y
                     # myBody.gravity = (0.0, -900.0)
-                    self._space.gravity = (0, -900.0)
+                    ##self._space.gravity = (0, -900.0)
 
     def _add_static_scenery(self):#draws the line
         """
@@ -134,7 +137,7 @@ class BouncyBalls(object):
     def _add_domino(self):
         for i in range(5): #5 dominoes
             points = [(-10, -40), (-10, 40), (5, 40), (5, -40)]
-            mass = 10
+            mass = 30
             inertia = pymunk.moment_for_box(3, (30, 60))
             body = pymunk.Body(mass, inertia)
             body.position = (250+(i*55)), 350
