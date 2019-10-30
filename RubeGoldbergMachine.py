@@ -95,7 +95,7 @@ class BouncyBalls(object):
                 x = myBody.position.x
                 if x1 < x < x2:
 
-                    myBody.velocity = myBody.velocity.x, 10 * random.randint(40, 60)
+                    myBody.velocity = myBody.velocity.x, 10 * random.randint(50, 70)
                     # myBody.gravity = (0.0, 900.0)
                     ##self._space.gravity = (0, 600)
                     # print("yes")
