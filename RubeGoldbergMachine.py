@@ -94,16 +94,10 @@ class BouncyBalls(object):
             if executed:
                 x = myBody.position.x
                 if x1 < x < x2:
-
                     myBody.velocity = myBody.velocity.x, 10 * random.randint(50, 70)
-                    # myBody.gravity = (0.0, 900.0)
-                    ##self._space.gravity = (0, 600)
-                    # print("yes")
 
                 else:
                     myBody.velocity = myBody.velocity.x, myBody.velocity.y
-                    # myBody.gravity = (0.0, -900.0)
-                    ##self._space.gravity = (0, -900.0)
 
     def _add_static_scenery(self):#draws the line
         """
@@ -118,16 +112,21 @@ class BouncyBalls(object):
                         pymunk.Segment(static_body, (100, 745), (300, 670), 0),  # second
                         pymunk.Segment(static_body, (475, 620), (200, 520), 0)]  # third
         for line in zigzag_lines:
-            line.elasticity = 0.5
+            line.elasticity = 0.7
             line.friction = 0.5
+
+        funnel_lines = [pymunk.Segment(static_body, (1125.0, 600.0), (1275.0, 500.0), 0.0),  # Funnel Diag Left
+                        pymunk.Segment(static_body, (1475.0, 600.0), (1325.0, 500.0), 0.0),  # Funnel Diag Right
+                        pymunk.Segment(static_body, (1275.0, 400.0), (1275.0, 500.0), 0.0),  # Funnel Vert Left
+                        pymunk.Segment(static_body, (1325.0, 400.0), (1325.0, 500.0), 0.0)]  # Funnel Vert Right
+
+        for line in funnel_lines:
+            line.elasticity = 0.7
+            line.friction = 0.2
 
         static_lines = [pymunk.Segment(static_body, (0.0, 300.0), (0.0, 600.0), 0.0),  # Left border
                         pymunk.Segment(static_body, (100.0, 345.0), (500.0, 345.0), 0.0),  # Dominoes
                         pymunk.Segment(static_body, (0.0, 395.0), (100.0, 345.0), 0.0),  # Dominoes
-                        pymunk.Segment(static_body, (1125.0, 600.0), (1275.0, 500.0), 0.0),  # Funnel Diag Left
-                        pymunk.Segment(static_body, (1475.0, 600.0), (1325.0, 500.0), 0.0),  # Funnel Diag Right
-                        pymunk.Segment(static_body, (1275.0, 400.0), (1275.0, 500.0), 0.0),  # Funnel Vert Left
-                        pymunk.Segment(static_body, (1325.0, 400.0), (1325.0, 500.0), 0.0),  # Funnel Vert Right
                         pymunk.Segment(static_body, (850.0, 800.0), (1200.0, 900.0), 0.0),   # roof
                         pymunk.Segment(static_body, (1255.0, 175.0), (1275.0, 100.0), 0.0),  # bucket left
                         pymunk.Segment(static_body, (1345.0, 175.0), (1325.0, 100.0), 0.0),  # bucket right
@@ -136,15 +135,17 @@ class BouncyBalls(object):
                         # pymunk.Segment(static_body, (50.0, 530.0), (350.0, 430.0), 0.0),  # fourth zigzag line
                         ]
         #static_lines = [pymunk.Segment(static_body, (50.0, 100.0), (500.0, 100.0), 0.0)] #these are like points to make a line (like a acoordinate grid where 0 is on the bottom)
+
         for line in static_lines:
             line.elasticity = 0.25
             line.friction = 0.6
 
         self._space.add(zigzag_lines)
+        self._space.add(funnel_lines)
         self._space.add(static_lines)
 
     def _add_domino(self):
-        for i in range(5): #5 dominoes
+        for i in range(5):  #5 dominoes
             points = [(-10, -40), (-10, 40), (5, 40), (5, -40)]
             mass = 30
             inertia = pymunk.moment_for_box(3, (30, 60))
