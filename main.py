@@ -24,16 +24,18 @@ myShape = pymunk.Circle
 
 executed = False
 
-x1 = 700
-x2 = 1200
+x1 = 400
+y1 = 600
 
+x2 = 700
+y2 = 300
 class BouncyBalls(object):
     """
     This class implements a simple scene in which there is a static platform (made up of a couple of lines)
     that don't move. Balls appear occasionally and drop onto the platform. They bounce around.
     """
 
-    myBody
+
 
     def __init__(self):
         # Space
@@ -91,19 +93,15 @@ class BouncyBalls(object):
 
             if executed == True:
                 x = myBody.position.x
-                if x > x1 and x < x2:
-                    #myBody.gravity = (0.0, 900.0)
-                    self._space.gravity = (0, 900)
-                    #print("yes")
+                y = myBody.position.y
+                if x > x1 - 50:
+                    print("one")
+                    if y > y1 - 100 and y < y1 + 100:
+                        print("two")
+                        myBody.position = Vec2d(x2 + 50, y2 + 50)
 
-                else:
-                    #myBody.gravity = (0.0, -900.0)
-                    self._space.gravity = (0, -900.0)
-                    #print("no")
 
-            #print(myBody.position.x)
 
-            #print(myBody.x)
 
     def _create_ball(self):
         """
@@ -157,10 +155,13 @@ class BouncyBalls(object):
 
         global x1
         global x2
+        global y1
+        global y2
 
         static_body = self._space.static_body
         static_lines = [pymunk.Segment(static_body, (100.0, 700.0), (500.0, 400.0), 3.0),
-                        pymunk.Segment(static_body, (x1, 100), (x2, 100), 5.0)]
+                        pymunk.Segment(static_body, (x1, y1 + 100), (x1, y1 - 100), 5.0),
+                        pymunk.Segment(static_body, (x2, y2 + 100), (x2, y2 - 100), 5.0)]
         for line in static_lines:
             line.elasticity = 0.95
             line.friction = 0.9
