@@ -10,6 +10,14 @@ from pygame.color import *
 # pymunk imports
 import pymunk
 import pymunk.pygame_util
+from pymunk.vec2d import Vec2d
+
+executed = False
+
+x1 = 625
+x2 = 800
+myBody = pymunk.Body
+myShape = pymunk.Shape
 
 
 class BouncyBalls(object):
@@ -45,6 +53,9 @@ class BouncyBalls(object):
         #adds trampoline
         self._add_trampoline()
 
+        #add fan
+        self._add_fan()
+
         # Balls that exist in the world
         self._balls = []
 
@@ -76,56 +87,105 @@ class BouncyBalls(object):
             self._clock.tick(50)
             pygame.display.set_caption("fps: " + str(self._clock.get_fps()))
 
+            global x1, x2
+            global myBody
+            # print(myBody.position)
+
+            if executed:
+                x = myBody.position.x
+                if x1 < x < x2:
+                    myBody.velocity = myBody.velocity.x, 10 * random.randint(50, 70)
+
+                else:
+                    myBody.velocity = myBody.velocity.x, myBody.velocity.y
+
     def _add_static_scenery(self):#draws the line
         """
         Create the static bodies.
         :return: None
         """
         static_body = self._space.static_body
-        static_lines = [pymunk.Segment(static_body, (100.0, 700.0), (675.0, 700.0), 0.0),  # Dominoes
-                        pymunk.Segment(static_body, (0.0, 750.0), (100.0, 700.0), 0.0),   # Dominoes
-                        pymunk.Segment(static_body, (850.0, 600.0), (1000.0, 500.0), 0.0),  # Funnel Diag Left
-                        pymunk.Segment(static_body, (1200.0, 600.0), (1050.0, 500.0), 0.0),  # Funnel Diag Right
-                        pymunk.Segment(static_body, (1000.0, 400.0), (1000.0, 500.0), 0.0),  # Funnel Vert Left
-                        pymunk.Segment(static_body, (1050.0, 400.0), (1050.0, 500.0), 0.0),  # Funnel Vert Right
+        # zigzag_lines = [pymunk.Segment(static_body, (250.0, 730.0), (550.0, 830.0), 0.0),  # first  zigzag line
+        #                 pymunk.Segment(static_body, (50.0, 730.0), (350.0, 630.0), 0.0),  # second zigzag line
+        #                 pymunk.Segment(static_body, (350.0, 500.0), (650.0, 600.0), 0.0)]  # third zigzag line
+        zigzag_lines = [pymunk.Segment(static_body, (275, 775), (400, 875), 0),  # first
+                        pymunk.Segment(static_body, (100, 745), (300, 670), 0),  # second
+                        pymunk.Segment(static_body, (475, 620), (200, 520), 0)]  # third
+        for line in zigzag_lines:
+            line.elasticity = 0.7
+            line.friction = 0.5
+
+        funnel_lines = [pymunk.Segment(static_body, (1125.0, 600.0), (1275.0, 500.0), 0.0),  # Funnel Diag Left
+                        pymunk.Segment(static_body, (1475.0, 600.0), (1325.0, 500.0), 0.0),  # Funnel Diag Right
+                        pymunk.Segment(static_body, (1275.0, 400.0), (1275.0, 500.0), 0.0),  # Funnel Vert Left
+                        pymunk.Segment(static_body, (1325.0, 400.0), (1325.0, 500.0), 0.0)]  # Funnel Vert Right
+
+        for line in funnel_lines:
+            line.elasticity = 0.7
+            line.friction = 0.2
+
+        static_lines = [pymunk.Segment(static_body, (0.0, 300.0), (0.0, 600.0), 0.0),  # Left border
+                        pymunk.Segment(static_body, (100.0, 345.0), (500.0, 345.0), 0.0),  # Dominoes
+                        pymunk.Segment(static_body, (0.0, 395.0), (100.0, 345.0), 0.0),  # Dominoes
+                        pymunk.Segment(static_body, (850.0, 800.0), (1200.0, 900.0), 0.0),   # roof
+                        pymunk.Segment(static_body, (1255.0, 175.0), (1275.0, 100.0), 0.0),  # bucket left
+                        pymunk.Segment(static_body, (1345.0, 175.0), (1325.0, 100.0), 0.0),  # bucket right
+                        pymunk.Segment(static_body, (1275.0, 100.0), (1325.0, 100.0), 0.0)   # bucket bottom
+
+                        # pymunk.Segment(static_body, (50.0, 530.0), (350.0, 430.0), 0.0),  # fourth zigzag line
                         ]
         #static_lines = [pymunk.Segment(static_body, (50.0, 100.0), (500.0, 100.0), 0.0)] #these are like points to make a line (like a acoordinate grid where 0 is on the bottom)
+
         for line in static_lines:
-            line.elasticity = 0.05
-            line.friction = 0.9
+            line.elasticity = 0.25
+            line.friction = 0.6
+
+        self._space.add(zigzag_lines)
+        self._space.add(funnel_lines)
         self._space.add(static_lines)
 
     def _add_domino(self):
-        for i in range(5): #5 dominoes
-            points = [(-10, -40), (-10, 40), (10, 40), (10, -40)]
-            mass = 1
+        for i in range(5):  #5 dominoes
+            points = [(-10, -40), (-10, 40), (5, 40), (5, -40)]
+            mass = 30
             inertia = pymunk.moment_for_box(3, (30, 60))
             body = pymunk.Body(mass, inertia)
-            body.position = (300+(i*55)), 750
+            body.position = (150+(i*55)), 350
             shape = pymunk.Poly(body, points, None, 0)
-            shape.elasticity = 0
+            shape.elasticity = 0.3
             shape.friction = 0.5
             self._space.add(body, shape)
 
         # ball that will be hit by dominoes
-        mass = 1
+        mass = 10
         radius = 25
         inertia = pymunk.moment_for_circle(mass, 0, radius, (0, 0))
-        body = pymunk.Body(mass, inertia)
-        body.position = 625, 750
-        shape = pymunk.Circle(body, radius, (0, 0))
-        shape.elasticity = 0.2
-        shape.friction = 0.1
-        self._space.add(body, shape)
+        global myBody, myShape, executed
+        myBody = pymunk.Body(mass, inertia)
+        myBody.position = 450, 550
+        myShape = pymunk.Circle(myBody, radius, (0, 0))
+        myShape.elasticity = 0.2
+        myShape.friction = 0.2
+        self._space.add(myBody, myShape)
+        executed = True
 
     def _add_trampoline(self):
         points = [(-70, -10), (-70, 10), (70, 10), (70, -10)]
         body = pymunk.Body(body_type=pymunk.Body.STATIC)
-        body.position = 720, 600
-        body.angle = 100
+        body.position = 525, 200
+        body.angle = 2.9
         shape = pymunk.Poly(body, points, None, 0)
-        shape.elasticity = 6.0
+        shape.elasticity = 9.0
         shape.friction = 0.5
+        self._space.add(body, shape)
+
+    def _add_fan(self):
+        points = [(-100, -10), (-100, 10), (75, 10), (75, -10)]
+        body = pymunk.Body(body_type=pymunk.Body.STATIC)
+        body.position = 725, 100
+        shape = pymunk.Poly(body, points, None, 0)
+        shape.elasticity = 0
+        shape.friction = 0
         self._space.add(body, shape)
 
     def _process_events(self):
@@ -164,15 +224,15 @@ class BouncyBalls(object):
         Create a ball.
         :return:
         """
-        mass = 1
+        mass = 20
         radius = 25
         inertia = pymunk.moment_for_circle(mass, 0, radius, (0, 0))
         body = pymunk.Body(mass, inertia)
         x = random.randint(115, 350)
-        body.position = 10, 900
+        body.position = 350, 900
         shape = pymunk.Circle(body, radius, (0, 0))
         shape.elasticity = 0.95
-        shape.friction = 0.9
+        shape.friction = 0.6
         self._space.add(body, shape)
         self._balls.append(shape)
 
