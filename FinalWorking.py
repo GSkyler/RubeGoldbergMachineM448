@@ -101,7 +101,7 @@ class BouncyBalls(object):
             if executed:
                 x = myBody.position.x
                 if x1 < x < x2:
-                    myBody.velocity = myBody.velocity.x, 10 * 40 #random.randint(20, 40)
+                    myBody.velocity = myBody.velocity.x, 10 * random.randint(10, 40)
 
                 else:
                     myBody.velocity = myBody.velocity.x, myBody.velocity.y
