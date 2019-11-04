@@ -1,3 +1,38 @@
+import tkinter as tk
+import random
+root = tk.Tk()
+
+canvas1 = tk.Canvas(root, width=400, height=300, relief='raised')
+canvas1.pack()
+
+label1 = tk.Label(root, text='Ask a yes or no question!')
+label1.config(font=('helvetica', 14))
+canvas1.create_window(200, 25, window=label1)
+
+label2 = tk.Label(root, text='Type in the box below :')
+label2.config(font=('helvetica', 10))
+canvas1.create_window(200, 100, window=label2)
+
+entry1 = tk.Entry(root)
+canvas1.create_window(200, 140, window=entry1)
+
+
+
+def getQ():
+    global x1
+    x1 = entry1.get() + ""
+    print(entry1.get())
+    root.destroy()
+
+
+
+button1 = tk.Button(text='Get your answer!', command=getQ, bg='brown', fg='white',
+                    font=('helvetica', 9, 'bold'))
+canvas1.create_window(200, 180, window=button1)
+
+
+root.mainloop()
+
 # Python imports
 import random
 
@@ -20,6 +55,8 @@ myBody = pymunk.Body
 myShape = pymunk.Shape
 
 class BouncyBalls(object):
+   global choice
+   choice = random.choice([True, False])
    numBalls = 0
    """
    This class implements a simple scene in which there is a static platform (made up of a couple of lines)
@@ -364,6 +401,28 @@ class BouncyBalls(object):
        :return: None
        """
        self._screen.fill(THECOLORS["white"])
+
+       font = pygame.font.Font('freesansbold.ttf', 32)
+
+       black = (0, 0, 0)
+
+       # create a text suface object,
+       # on which text is drawn on it.
+       text2 = font.render("Yes", True, black)
+       text3 = font.render("No", True, black)
+
+       # create a rectangular object for the
+       # text surface object
+       textRect2 = text2.get_rect()
+       textRect3 = text3.get_rect()
+
+       # set the center of the rectangular object.
+       textRect2.center = (1460, 800)  # text under bucket 1
+       textRect3.center = (1650, 800)  # text under bucket 2
+
+       self._screen.blit(text2, textRect2)
+       self._screen.blit(text3, textRect3)
+
 
    def _draw_objects(self):
        """
